@@ -5,10 +5,12 @@ function generateProps(attrs) {
   attrs.forEach(attr => {
     if (attr.name === "style") {
       const obj = {}
-      attr.value.splite(";").forEach(item => {
-        const [key, value] = item.splite(":")
-        obj[key] = value
-      })
+      if (attr.value) {
+        attr.value.split(";").forEach(item => {
+          const [key, value] = item.split(":")
+          obj[key] = value
+        })
+      }
       attr.value = obj
     }
     str += `${attr.name}:${JSON.stringify(attr.value)},`
