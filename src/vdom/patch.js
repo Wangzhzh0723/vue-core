@@ -19,6 +19,8 @@ function createElm(vnode) {
 
   if (isString(tag)) {
     vnode.el = document.createElement(tag)
+    // 更新属性
+    updateProperties(vnode)
     children.forEach(child => {
       vnode.el.appendChild(createElm(child))
     })
@@ -26,4 +28,27 @@ function createElm(vnode) {
     vnode.el = document.createTextNode(text)
   }
   return vnode.el
+}
+
+function updateProperties(vnode) {
+  const el = vnode.el
+  const newProps = vnode.data || {}
+  for (const key in newProps) {
+    const value = newProps[key]
+
+    if (key === "style") {
+      // 如果是style
+      const style = value || {}
+      const styleList = {}
+      for (const styleName in style) {
+        styleList[styleName] = style[styleName]
+      }
+      Object.assign(el.style, styleList)
+    } else if (key === "class") {
+      // 如果是class
+      el.className = value
+    } else {
+      el.setAttribute(key, value)
+    }
+  }
 }
