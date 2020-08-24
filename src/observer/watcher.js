@@ -1,4 +1,5 @@
 import { pushTarget, popTarget } from "./dep"
+import nextTick from "../util/nextTick"
 
 let id = 0
 export default class Watcher {
@@ -27,6 +28,11 @@ export default class Watcher {
     popTarget() // 移除watcher 防止data中不在页面中使用的属性被添加到dep中
   }
   update() {
+    // 队列watcher
+    queueWatcher(this)
+    // this.getter() // 重新渲染
+  }
+  run() {
     this.getter() // 重新渲染
   }
   addDep(dep) {
@@ -35,6 +41,32 @@ export default class Watcher {
       this.depIds.add(id)
       this.deps.push(dep)
       dep.addSub(this)
+    }
+  }
+}
+// 将需要批量更新的watcher存到一个队列中, 稍后让watcher执行
+// 利用evenloop事件环
+const queue = []
+const has = new Set()
+let pendding = false
+
+function flushSchedulerQueue() {
+  queue.forEach(w => (w.run(), w.cb()))
+  queue.length = 0 // 清空队列
+  has.clear() // 清空标识
+  pendding = false
+}
+function queueWatcher(watcher) {
+  const id = watcher.id
+  debugger
+  if (!has.has(id)) {
+    // 去重watcher
+    queue.push(watcher)
+    has.add(id)
+    if (!pendding) {
+      // 如果队列还在pendding, 就不在开启定时器
+      nextTick(flushSchedulerQueue)
+      pendding = true
     }
   }
 }

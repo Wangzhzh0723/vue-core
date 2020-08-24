@@ -24,12 +24,10 @@ export function mountComponent(vm, el) {
     vm,
     updateComponent,
     () => {
-      callHook(vm, "beforeUpdate")
+      callHook(vm, "updated")
     },
     true
   )
-  console.log(watcher, "mounted-")
-
   callHook(vm, "mounted")
 }
 

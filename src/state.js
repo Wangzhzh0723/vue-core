@@ -39,3 +39,9 @@ function initData(vm) {
 }
 function initComputed(vm) {}
 function initWatch(vm) {}
+
+export function stateMixin(Vue) {
+  Vue.prototype.$nextTick = function(cb) {
+    console.log(cb)
+  }
+}
