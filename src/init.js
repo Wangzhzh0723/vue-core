@@ -1,11 +1,14 @@
 import { initState } from "./state"
 import { compileToFunction } from "./compiler/index"
-import { mountComponent } from "./lifecycle"
+import { mountComponent, callHook } from "./lifecycle"
+import { mergeOptions } from "./util/utils"
 
 export function initMixin(Vue) {
   Vue.prototype._init = function(options) {
     const vm = this
-    vm.$options = options
+    // 需要将用户自定义的options和全局的options做合并
+    options = vm.$options = mergeOptions(vm.constructor.options, options)
+    callHook(vm, "beforeCreate")
 
     // vue里面核心特性 响应式数据原理
     // vue 是一个什么样的框架 参考MVVM
@@ -15,6 +18,8 @@ export function initMixin(Vue) {
     // 将数据进行劫持, 当数据变化的时候更新视图
     // vue组件中处理状态(data, props, watch, computed)
     initState(vm)
+
+    callHook(vm, "created")
 
     if (options.el) {
       this.$mount(options.el)

@@ -13,10 +13,28 @@
       <li style="background: cyan;">年龄: {{age}}</li>
     </div>
     <script>
+      Vue.mixin({
+        created() {
+          console.log("created-a")
+        }
+      })
+      Vue.mixin({
+        created: [
+          () => {
+            console.log("created-b")
+          },
+          () => {
+            console.log("created-b")
+          }
+        ]
+      })
       let vm = new Vue({
         el: "#app",
         data() {
           return { arr: [1, { c: 2 }], name: "小王", age: 18 }
+        },
+        created() {
+          console.log("created2")
         }
       })
       setTimeout(() => {

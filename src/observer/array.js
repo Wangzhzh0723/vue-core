@@ -12,7 +12,7 @@ const methods = ["pop", "push", "shift", "unshift", "sort", "reverse", "splice"]
 
 methods.forEach(method => {
   arrayMethods[method] = function(...args) {
-    console.log("数组被调用了")
+    // console.log("数组被调用了")
     const result = oldArrayProtoMethods[method].apply(this, arguments)
     let inserted
     switch (method) {

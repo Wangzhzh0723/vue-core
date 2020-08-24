@@ -29,12 +29,12 @@ class Observer {
 function defineReactive(data, key, value) {
   Object.defineProperty(data, key, {
     get() {
-      console.log("获取值", key, value)
+      // console.log("获取值", key, value)
       return value
     },
     set(newVal) {
       if (newVal === value) return
-      console.log("设置值", key, newVal)
+      // console.log("设置值", key, newVal)
       value = newVal
       observe(newVal) //如果新值是对象的话再进行监测
     }
