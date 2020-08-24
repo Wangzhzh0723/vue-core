@@ -11,36 +11,35 @@
     <div id="app">
       <li style="color: red;">姓名: {{name}}</li>
       <li style="background: cyan;">年龄: {{age}}</li>
+      {{user}} {{arr[1]}} {{arr}}
     </div>
     <script>
-      Vue.mixin({
-        created() {
-          console.log("created-a")
-        }
-      })
-      Vue.mixin({
-        created: [
-          () => {
-            console.log("created-b")
-          },
-          () => {
-            console.log("created-b")
-          }
-        ]
-      })
       let vm = new Vue({
         el: "#app",
         data() {
-          return { arr: [1, { c: 2 }], name: "小王", age: 18 }
+          return { arr: [1, { c: 2 }], user: { a: 1 }, name: "小王", age: 18 }
         },
         created() {
           console.log("created2")
+        },
+        mounted() {
+          console.log("mounted")
         }
       })
       setTimeout(() => {
         vm.name += ",你好"
-        vm._update(vm._render())
+        // vm._update(vm._render())
       }, 1000)
+      setTimeout(() => {
+        vm.arr[1].c = 3
+        // vm.user.a = "hahaah"
+        // vm._update(vm._render())
+      }, 2000)
+      setTimeout(() => {
+        vm.arr.push(100)
+        // vm.user.a = "hahaah"
+        // vm._update(vm._render())
+      }, 3000)
       // vm._data.arr[1].c = 4
       // vm._data.arr.splice(1, 1, { dd: 1 })
       // vm._data.arr[1].dd = 4

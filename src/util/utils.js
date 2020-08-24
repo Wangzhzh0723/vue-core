@@ -61,7 +61,6 @@ export function mergeOptions(parent, child) {
 
   for (const key in parent) {
     // 父亲和儿子都有
-    console.log(1, key)
     mergeField(key)
   }
 
@@ -70,7 +69,6 @@ export function mergeOptions(parent, child) {
     // 将儿子多的赋予到父亲上
 
     if (!parent.hasOwnProperty(key)) {
-      console.log(2, key)
       mergeField(key)
     }
   }

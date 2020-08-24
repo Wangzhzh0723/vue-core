@@ -13,6 +13,7 @@ const methods = ["pop", "push", "shift", "unshift", "sort", "reverse", "splice"]
 methods.forEach(method => {
   arrayMethods[method] = function(...args) {
     // console.log("数组被调用了")
+
     const result = oldArrayProtoMethods[method].apply(this, arguments)
     let inserted
     switch (method) {
@@ -30,6 +31,8 @@ methods.forEach(method => {
     const ob = this.__ob__
     if (inserted) ob.observeArray(inserted) // 对新增的内容检测
 
+    // 当调用数组劫持后的方法时, 更新页面
+    ob.dep.notify()
     return result
   }
 })

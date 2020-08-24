@@ -1,8 +1,11 @@
 import { isObject, isArray, defineProperty } from "../util/utils"
 import { arrayMethods } from "./array"
+import Dep from "./dep"
 
 class Observer {
   constructor(value) {
+    this.dep = new Dep() // value = {} // value = []
+
     // 自定义__ob__属性, 不可枚举和删除
     defineProperty(value, "__ob__", this)
 
@@ -27,24 +30,35 @@ class Observer {
 }
 // 递归属性, 性能差
 function defineReactive(data, key, value) {
+  const childObserve = observe(value) // 如果值是对象的话再进行监测
+  // 每个属性对应一个dep
+  const dep = new Dep()
+
+  // 当页面取值时 说明这个值用来渲染了, 将这个watcher和这个属性对应起来
   Object.defineProperty(data, key, {
     get() {
-      // console.log("获取值", key, value)
+      // 让这个属性记住watcher
+      if (Dep.target) {
+        dep.depend()
+        if (childObserve) {
+          // 可能是数组也可能是对象
+          // 默认给数组增加了一个dep属性, 当对数组这个对象取值的时候增加(存起来这个)渲染watcher
+          childObserve.dep.depend()
+        }
+      }
       return value
     },
     set(newVal) {
       if (newVal === value) return
-      // console.log("设置值", key, newVal)
       value = newVal
-      observe(newVal) //如果新值是对象的话再进行监测
+      observe(newVal) // 如果新值是对象的话再进行监测
+      dep.notify() // 通知更新  异步更新 防止多次操作
     }
   })
-  observe(value) // 如果值是对象的话再进行监测
 }
 
 export function observe(data) {
-  if (!isObject(data) || data.__ob__) {
-    return data
-  }
+  if (!isObject(data)) return
+  if (data.__ob__) return data.__ob__
   return new Observer(data)
 }
