@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">{{a}}</div>
+    <script src="/dist/umd/vue.js"></script>
+    <script>
+      const vm = new Vue({
+        el: "#app",
+        data() {
+          return {
+            a: 1,
+            b: {
+              b: 1
+            }
+          }
+        },
+        watch: {
+          // watch写法
+          // 1. key: value
+          // 2. key: []
+          // 3. 监控实例上的方法
+          // 4. handler
+          a: {
+            handler(newVal, oldVal) {
+              console.log(newVal, oldVal, "handler")
+            },
+            immediate: true
+          }
+        }
+      })
+      console.log(vm)
+      vm.a = 2
+    </script>
+  </body>
+</html>

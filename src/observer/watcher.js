@@ -1,5 +1,6 @@
 import { pushTarget, popTarget } from "./dep"
 import nextTick from "../util/nextTick"
+import { isBoolean } from "../util/utils"
 
 let id = 0
 export default class Watcher {
@@ -9,23 +10,41 @@ export default class Watcher {
    * @param {*} cb 回调函数
    * @param {*} options 选项
    */
-  constructor(vm, exprOrFn, cb, options) {
+  constructor(vm, exprOrFn, cb, options = {}) {
     this.vm = vm
     this.exprOrFn = exprOrFn
     this.cb = cb
     this.options = options
+    this.user = !!options.user // 用户watcher
+    this.isWatcher = isBoolean(options) // 是渲染watcher
+
     this.id = ++id // watcher唯一标识
     this.deps = [] // watcher记录有多少dep依赖他
     this.depIds = new Set()
     if (typeof exprOrFn === "function") {
       this.getter = exprOrFn
+    } else {
+      this.getter = function() {
+        // exprOrFn可能是一个字符串
+        // 当去实例上取值的时候 才会触发依赖收集
+        const path = exprOrFn.split(".") // ["a", "b"]
+        let obj = vm,
+          curPath
+        while ((curPath = path.shift())) {
+          obj = obj[curPath]
+        }
+        return obj
+      }
     }
-    this.get() // 默认会调用get方法
+    // 默认会调用get方法
+    // 进行取值, 将结果保留下来
+    this.value = this.get()
   }
   get() {
     pushTarget(this) // 当前watcher实例
-    this.getter() // 调用 exprOrFn 渲染页面
+    const result = this.getter() // 调用 exprOrFn 渲染页面
     popTarget() // 移除watcher 防止data中不在页面中使用的属性被添加到dep中
+    return result
   }
   update() {
     // 队列watcher
@@ -33,7 +52,11 @@ export default class Watcher {
     // this.getter() // 重新渲染
   }
   run() {
-    this.getter() // 重新渲染
+    const newVal = this.getter() // 重新渲染
+    const oldVal = this.value
+    if (this.user) {
+      this.cb.call(this.vm, newVal, oldVal)
+    }
   }
   addDep(dep) {
     const id = dep.id
@@ -51,14 +74,18 @@ const has = new Set()
 let pendding = false
 
 function flushSchedulerQueue() {
-  queue.forEach(w => (w.run(), w.cb()))
+  queue.forEach(watcher => {
+    watcher.run()
+    if (watcher.isWatcher) {
+      watcher.cb()
+    }
+  })
   queue.length = 0 // 清空队列
   has.clear() // 清空标识
   pendding = false
 }
 function queueWatcher(watcher) {
   const id = watcher.id
-  debugger
   if (!has.has(id)) {
     // 去重watcher
     queue.push(watcher)

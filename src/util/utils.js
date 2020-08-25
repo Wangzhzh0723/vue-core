@@ -5,6 +5,7 @@ const isType = type => obj => prototypeToString.call(obj) === `[object ${type}]`
 export const isArray = isType("Array")
 export const isString = isType("String")
 export const isNumber = isType("Number")
+export const isBoolean = isType("Boolean")
 
 // typeof是判断计算机底层数据类型的值(二进制)
 // object 对象存储在计算机中都是以000开始的二进制存储的
@@ -36,8 +37,8 @@ strats.data = function(parentVal, childVal) {
   // 先不处理
   return childVal
 }
-strats.computed = function() {}
-strats.watch = function() {}
+// strats.computed = function() {}
+// strats.watch = function() {}
 // 生命周期的合并
 function mergeHook(parentVal, childVal) {
   if (childVal) {
