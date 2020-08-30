@@ -34,6 +34,14 @@ export const LIFECYCLE_HOOKS = [
 ]
 
 const strats = {}
+strats.components = function(parentVal, childVal = {}) {
+  // res.__proto__ = parentVal
+  const res = Object.create(parentVal)
+  for (const key in childVal) {
+    res[key] = childVal[key]
+  }
+  return res
+}
 strats.data = function(parentVal, childVal) {
   // 先不处理
   return childVal
@@ -82,7 +90,7 @@ export function mergeOptions(parent, child) {
       options[key] = strats[key](parent[key], child[key])
     } else {
       // todo默认合并
-      options[key] = child[key]
+      options[key] = child[key] ? child[key] : parent[key]
     }
   }
   return options

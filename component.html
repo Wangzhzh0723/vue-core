@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>component</title>
+  </head>
+  <body>
+    <div id="app">
+      {{name}}
+      <my-button></my-button>
+      <aa></aa>
+    </div>
+    <script src="/dist/umd/vue.js"></script>
+    <script>
+      // 全局组件
+      Vue.component("my-button", {
+        // Vue.extend
+        template: "<button>点我</button>"
+      })
+      const vm = new Vue({
+        el: "#app",
+        components: {
+          aa: {
+            template: "<div>haha</div>"
+          }
+        },
+        data() {
+          return {
+            name: "组件"
+          }
+        }
+      })
+      console.log(vm)
+      // 为什么要才分成小组件
+      // 1. 实现复用
+      // 2. 方便维护
+      // 3. 编写组件能尽量拆分尽量才分, vue的更新问题  每个组件一个渲染watcher 减少dom diff
+    </script>
+  </body>
+</html>
