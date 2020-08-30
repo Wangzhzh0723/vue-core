@@ -29,3 +29,6 @@ export default function initExtend(Vue) {
 // 3. 等会创建子类的时候会调用父类的_init方法
 // 4. 然后$mount即可
 // 5. 组件的初始化就是 new 这个组件的构造方法 并且调用调用 $mount 方法
+//
+// 6. 组件创建真实dom时 (先渲染的是父组件) 遇到是组件的虚拟节点时, 去掉用init方法, 让组件初始化并挂载,
+//    组件的$mount无参数会把渲染后的dom放到 vm.$el 上 ==>> vnode.componentInstance中, 这样渲染的时候,获取这个对象的$el属性来渲染

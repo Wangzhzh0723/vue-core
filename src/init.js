@@ -30,13 +30,13 @@ export function initMixin(Vue) {
     const options = this.$options
     vm.$el = el = document.querySelector(el)
     if (!options.render) {
-      // 没传render, 将templete转成render
-      let templete = options.templete
-      if (!templete && el) {
-        templete = el.outerHTML
+      // 没传render, 将template转成render
+      let template = options.template
+      if (!template && el) {
+        template = el.outerHTML
       }
-      // 将templete转成render
-      const render = compileToFunction(templete)
+      // 将template转成render
+      const render = compileToFunction(template)
       options.render = render
     }
     mountComponent(vm, el)

@@ -44,7 +44,11 @@ function createComponent(vm, tag, data, key, children, Ctor) {
   // 给组件增加生命周期
   data.hook = {
     // 稍后初始化组件时  会调用此init方法
-    init() {}
+    init(vnode) {
+      const child = (vnode.componentInstance = new Ctor({}))
+      child.$mount() // 挂载逻辑  组建的$mount方法中不传参数
+      // vnode.componentInstance.$el 指代的就是当前组件的真实dom
+    }
   }
   return vnode(
     `vue-component-${Ctor.cid}-${tag}`,

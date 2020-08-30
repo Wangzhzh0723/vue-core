@@ -1,6 +1,10 @@
 import { isString } from "../util/utils"
 
 export function patch(oldVnode, vnode) {
+  if (!oldVnode) {
+    // 如果是组件oldVnode是undefined
+    return createElm(vnode) // vnode是组件中的内容
+  }
   let el
   // 默认初始化时 是直接用虚拟节点创建出来的真实节点替换老节点
   if (oldVnode.nodeType === 1) {
@@ -166,10 +170,24 @@ function updateChildren(oldChildren, newChildren, parentEl) {
   }
 }
 
+function createComponent(vnode) {
+  // 调用hook中的init方法
+  let i = vnode.data
+  if ((i = i.hook) && (i = i.init)) {
+    // i ==>> init
+    i(vnode)
+  }
+  return vnode.componentInstance
+}
+
 function createElm(vnode) {
   const { tag, children = [], key, data, text } = vnode
-
   if (isString(tag)) {
+    if (createComponent(vnode)) {
+      // 组件渲染后的结果放到 当前组件的实例上  vm.$el
+      return vnode.componentInstance.$el
+    }
+
     vnode.el = document.createElement(tag)
     // 更新属性
     updateProperties(vnode)

@@ -1,11 +1,11 @@
 import { generate } from "./generate"
 import { parseHTML } from "./parse"
 
-export function compileToFunction(templete) {
+export function compileToFunction(template) {
   // html模板 ==> render函数
   // 1. 需要将html转成"ast"语法树, 可以用ast树来描述语言本身, 虚拟dom是用来描述节点的
 
-  const ast = parseHTML(templete)
+  const ast = parseHTML(template)
   //   console.log(ast)
   // 2. 优化静态节点
   // 3. 通过这棵树重新生成代码

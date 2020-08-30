@@ -42,10 +42,10 @@ strats.components = function(parentVal, childVal = {}) {
   }
   return res
 }
-strats.data = function(parentVal, childVal) {
-  // 先不处理
-  return childVal
-}
+// strats.data = function(parentVal, childVal) {
+//   // 先不处理
+//   return childVal
+// }
 // strats.computed = function() {}
 // strats.watch = function() {}
 // 生命周期的合并

@@ -23,13 +23,45 @@
         el: "#app",
         components: {
           aa: {
-            template: "<div>haha</div>"
+            template: "<div>{{name}}</div>",
+            data() {
+              return {
+                name: "组件1"
+              }
+            },
+            beforeCreate() {
+              console.log("child beforeCreate")
+            },
+            beforeMount() {
+              console.log("child beforeMount")
+            },
+            created() {
+              console.log("child created")
+            },
+            mounted() {
+              console.log("child mounted")
+              setTimeout(() => {
+                this.name = "haha, 更新喽"
+              }, 1200)
+            }
           }
         },
         data() {
           return {
             name: "组件"
           }
+        },
+        beforeCreate() {
+          console.log("beforeCreate")
+        },
+        beforeMount() {
+          console.log("beforeMount")
+        },
+        created() {
+          console.log("created")
+        },
+        mounted() {
+          console.log("mounted")
         }
       })
       console.log(vm)
