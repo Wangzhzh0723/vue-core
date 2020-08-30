@@ -10,14 +10,34 @@
   <body>
     <div id="app">
       <li style="color: red;">姓名: {{name}}</li>
-      <li style="background: cyan;">年龄: {{age}}</li>
+      <li style="background: cyan;">年龄: {{age}} 岁</li>
       {{user}} {{arr[1]}} {{arr}}
+      <li>{{fullName}}</li>
     </div>
     <script>
       let vm = new Vue({
         el: "#app",
         data() {
-          return { arr: [1, { c: 2 }], user: { a: 1 }, name: "小王", age: 18 }
+          return {
+            arr: [1, { c: 2 }],
+            user: { a: 1 },
+            name: "小小王",
+            age: -0.8,
+            fistName: "小小",
+            lastName: "王"
+          }
+        },
+        computed: {
+          fullName() {
+            // 计算属性内部也使用的defineProperty
+            //通过watcher收集依赖
+            console.log("执行方法")
+            return this.fistName + this.lastName
+          }
+          // fullName2: {
+          //   get() {},
+          //   set() {}
+          // }
         },
         created() {
           console.log("created2")
@@ -26,6 +46,13 @@
           console.log("mounted")
         }
       })
+
+      console.log(vm.fullName)
+      console.log(vm.fullName)
+      vm.lastName += "你好"
+      console.log(vm.fullName)
+      console.log(vm.fullName)
+
       setTimeout(() => {
         vm.name += ",你好"
         // vm._update(vm._render())

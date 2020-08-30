@@ -18,6 +18,9 @@ export default class Watcher {
     this.user = !!options.user // 用户watcher
     this.isWatcher = isBoolean(options) // 是渲染watcher
 
+    this.lazy = !!options.lazy // 如果watcher有lazy属性, 说明是一个计算属性
+    this.dirty = this.lazy // dirty代表取值时是否执行用户提供的方法
+
     this.id = ++id // watcher唯一标识
     this.deps = [] // watcher记录有多少dep依赖他
     this.depIds = new Set()
@@ -38,24 +41,40 @@ export default class Watcher {
     }
     // 默认会调用get方法
     // 进行取值, 将结果保留下来
-    this.value = this.get()
+    this.value = this.lazy ? void 0 : this.get()
   }
   get() {
     pushTarget(this) // 当前watcher实例
-    const result = this.getter() // 调用 exprOrFn 渲染页面
+    const result = this.getter.call(this.vm) // 调用 exprOrFn 渲染页面
     popTarget() // 移除watcher 防止data中不在页面中使用的属性被添加到dep中
     return result
   }
   update() {
-    // 队列watcher
-    queueWatcher(this)
-    // this.getter() // 重新渲染
+    if (this.lazy) {
+      // 是计算属性
+      this.dirty = true // 页面重新渲染就可以获取到最新的值了
+    } else {
+      // 队列watcher
+      queueWatcher(this)
+      // this.getter() // 重新渲染
+    }
   }
   run() {
-    const newVal = this.getter() // 重新渲染
+    const newVal = this.get() // 重新渲染
     const oldVal = this.value
     if (this.user) {
       this.cb.call(this.vm, newVal, oldVal)
+    }
+  }
+  evaluate() {
+    this.value = this.get() // 求值
+    this.dirty = false // dirty赋值为false
+  }
+  depend() {
+    // 计算属性watcher 会存储dep dep会存储watcher
+    let i = this.deps.length
+    while (i--) {
+      this.deps[i].depend() // 让渲染watcher重新存起来
     }
   }
   addDep(dep) {

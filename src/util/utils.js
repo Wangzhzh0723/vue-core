@@ -12,6 +12,7 @@ export const isBoolean = isType("Boolean")
 // 而null全是0, 所以检测出来的结果是object,
 // 需要判断 目标对象不为null
 export const isObject = obj => typeof obj === "object" && obj !== null
+export const isFunction = obj => typeof obj === "function"
 
 export const defineProperty = (target, key, value) => {
   Object.defineProperty(target, key, {

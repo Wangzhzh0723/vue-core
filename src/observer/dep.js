@@ -21,13 +21,14 @@ export default class Dep {
 }
 
 Dep.target = null
-
+const stack = []
 export function pushTarget(watcher) {
-  Dep.target = watcher // 保留watcher
+  Dep.target = watcher
+  stack.push(watcher) // 保留watcher
 }
 
 export function popTarget() {
-  Dep.target = null // 移除watcher
+  Dep.target = stack.pop() // 移除watcher
 }
 
 // 多对多的关系  一个属性有一个dep 是用来收集watcher的
