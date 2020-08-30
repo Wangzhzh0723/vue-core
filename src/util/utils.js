@@ -95,3 +95,17 @@ export function mergeOptions(parent, child) {
   }
   return options
 }
+
+function makeMap(str) {
+  const mapping = {}
+  const list = str.split(",")
+  for (let i = 0; i < list.length; i++) {
+    mapping[list[i]] = true
+  }
+  // 判断标签名是否是真实标签
+  return key => !!mapping[key]
+}
+
+export const isReservedTag = makeMap(
+  "a,div,image,img,text,p,span,li,ul,input,button,textarea,h1,h2,h3,h4,h5,h6"
+)

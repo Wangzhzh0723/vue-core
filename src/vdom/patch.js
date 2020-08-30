@@ -167,7 +167,7 @@ function updateChildren(oldChildren, newChildren, parentEl) {
 }
 
 function createElm(vnode) {
-  const { tag, children, key, data, text } = vnode
+  const { tag, children = [], key, data, text } = vnode
 
   if (isString(tag)) {
     vnode.el = document.createElement(tag)

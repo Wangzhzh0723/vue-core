@@ -1,12 +1,15 @@
 import { mergeOptions } from "../util/utils"
 
 export default function initExtend(Vue) {
+  let cid = 0
   // 核心就是创建一个子类继承父类
   Vue.extend = function(extendOptions) {
+    // 如果对象相同 应该复用构造函数(cache) 暂不实现
     const Super = this
     const Sub = function VueConponent(options) {
       this._init(options)
     }
+    Sub.cid = ++cid
     // 寄生组合继承
     Sub.prototype = Object.create(Super.prototype, {
       constructor: { value: Sub }
